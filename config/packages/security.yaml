@@ -5,11 +5,11 @@ security:
             memory:
                 users:
                     admin:
-                        password: $argon2i$v=19$m=1024,t=2,p=2$T1EuTHVKWlYxOHJZWXdIYQ$SQOdyuzBsmaHGM1VQFtFjSs/9AR4kESJK0y1Qr0Kkhs
+                        password: '%env(DEMO_PASSWORD)%'
                         roles: 'ROLE_ADMIN'
     encoders:
         Symfony\Component\Security\Core\User\User:
-            algorithm: argon2i
+            algorithm: plaintext
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
