@@ -10,7 +10,6 @@ use App\Entity\Tag;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class ContentController is responsible for storing content in the database
@@ -18,17 +17,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class ContentController extends AbstractController
 {
     /**
+     * @param string $account
      * @return Response
-     *
-     * @Route("/add_content", name="add_content")
      */
-    public function addContentFromTwitter(): Response
+    public function addContentFromTwitter(string $account): Response
     {
-        $crawler = (new Client('https://twitter.com/CBCOlympics', ['lang' => 'ru']))->getCrawler();
+        $crawler = (new Client("https://twitter.com/$account", ['lang' => 'ru']))->getCrawler();
         $parser = new TwitterParser($crawler);
         $entries = array_reverse($parser->getTweets());
         $entries = $this->removeAdded($entries);
-
         $count = 0;
         foreach ($entries as $entry) {
             $this->addArticle($entry);
@@ -65,9 +62,10 @@ class ContentController extends AbstractController
     {
         /** @var Article $latestArticle */
         $latestArticle = $this->getDoctrine()->getRepository(Article::class)->findOneBy([], ['createdAt' => 'DESC']);
+        $timeReference = !empty($latestArticle) ? $latestArticle->getCreatedAt()->gettimestamp() : 0;
 
-        return array_filter($entries, function ($item) use ($latestArticle) {
-            return (strtotime($item['createdAt']) > $latestArticle->getCreatedAt()->gettimestamp());
+        return array_filter($entries, function ($item) use ($timeReference) {
+            return (strtotime($item['createdAt']) > $timeReference);
         });
     }
 

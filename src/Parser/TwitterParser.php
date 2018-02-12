@@ -99,9 +99,11 @@ class TwitterParser
      */
     private function reformatContent(string $content): string
     {
-        $regex = "~((https?://|pic\.twitter)([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?).*$)~";
-        $content = preg_replace($regex, ' ', $content);
-        $content = trim($content, " \t\n\r\0\xB0\xA0");
+        //remove links
+        $content = preg_replace('~((https?://|pic\.twitter)([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?).*$)~', ' ', $content);
+        //remove non-unicode symbols
+        $content = preg_replace('~[\xc2\xA0]~', '', $content);
+        $content = trim($content, " \t\n\r\0\xB0");
         return $content;
     }
 }
