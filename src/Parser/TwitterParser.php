@@ -102,7 +102,7 @@ class TwitterParser
         //remove links
         $content = preg_replace('~((https?://|pic\.twitter)([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?).*$)~', ' ', $content);
         //remove non-unicode symbols
-        $content = preg_replace('~[\xc2\xA0]~', '', $content);
+        $content = preg_replace('~[\xc2\x80\xA0\xE2\x99]~', '', $content);
         $content = trim($content, " \t\n\r\0\xB0");
         return $content;
     }
