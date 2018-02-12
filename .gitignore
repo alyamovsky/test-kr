@@ -1,4 +1,5 @@
 /.idea/
+/scratches/
 ###> symfony/framework-bundle ###
 .env
 /public/bundles/
