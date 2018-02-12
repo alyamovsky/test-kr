@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ title|default('News') }}{% endblock %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <form class="form-inline">
+                    <input type="text" class="form-control mb-2 mr-sm-2" style="width: 75%"
+                           placeholder="Search news and tags">
+                    <button type="submit" class="btn btn-outline-primary mb-2">Search</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <h2>{% if title is defined %}<a href="{{ path('index') }}">Index</a> / {% endif %}{{ title|default('News') }}:</h2>
+                {% for article in articles %}
+                    <p>{{ article.createdAt|date('Y-m-d H:i') }}:
+                        {{ article.content }}</p>
+                    <hr>
+                {% endfor %}
+                    {% if articles.haveToPaginate %}
+                            {{ pagerfanta(articles, 'twitter_bootstrap4', {routeName: 'index_paginated'}) }}
+                    {% endif %}
+            </div>
+            <div class="col-md-3" style="border-left: 1px solid #999999">
+                <h2>Popular tags:</h2>
+                {% for tag in tags %}
+                    <p><a href="{{ path('articles_by_tag', {id: tag.id}) }}">{{ tag.name }}</a> ({{ tag.articles|length }})</p>
+                    <hr>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

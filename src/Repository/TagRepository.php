@@ -13,4 +13,23 @@ class TagRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Tag::class);
     }
+
+    public function findMostPopular(int $period)
+    {
+        $threshold = date('Y-m-d H:i:s', time() - $period);
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return $qb
+            ->select('t')
+            ->from('App:Tag', 't')
+            ->andWhere('t.updatedAt > :threshold')
+            ->addSelect('COUNT(a.id) as HIDDEN articles')
+            ->join('t.articles', 'a')
+            ->groupBy('t.id')
+            ->addOrderBy('articles', 'DESC')
+            ->addOrderBy('t.name')
+            ->setParameter('threshold', $threshold)
+            ->getQuery()
+            ->getResult();
+    }
 }

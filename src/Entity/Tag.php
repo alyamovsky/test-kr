@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -14,6 +16,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Tag
 {
+    /**
+     * How long tags are relevant
+     */
+    const RELEVANCE_TIME_IN_DAYS = 20 * 24 * 3600;
+
     /**
      * @var int
      *
@@ -32,6 +39,15 @@ class Tag
     private $name;
 
     /**
+     * @var \DateTime
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     * @Assert\DateTime
+     */
+    private $updatedAt;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="Article", mappedBy="tags")
@@ -41,6 +57,7 @@ class Tag
     public function __construct()
     {
         $this->articles = new ArrayCollection();
+        $this->updatedAt = new \DateTime();
     }
 
     /**
@@ -76,9 +93,9 @@ class Tag
     }
 
     /**
-     * @return ArrayCollection
+     * @return Collection
      */
-    public function getArticles(): ArrayCollection
+    public function getArticles(): Collection
     {
         return $this->articles;
     }
@@ -89,5 +106,21 @@ class Tag
     public function setArticles(ArrayCollection $articles): void
     {
         $this->articles = $articles;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt(\DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
     }
 }
