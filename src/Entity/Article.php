@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Article
 {
     /** Number of articles per page */
-    const NUM_ITEMS = 10;
+    const ITEMS_PER_PAGE = 10;
 
     /**
      * @var int
@@ -45,13 +45,14 @@ class Article
     /**
      * @var Tag[]|ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="tags")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="tags", cascade={"persist"})
      * @ORM\JoinTable(name="articles_tags_bridge")
      */
     private $tags;
 
     public function __construct()
     {
+        $this->createdAt = new \DateTime();
         $this->tags = new ArrayCollection();
     }
 
