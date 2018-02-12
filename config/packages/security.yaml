@@ -1,0 +1,27 @@
+security:
+    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    providers:
+        in_memory:
+            memory:
+                users:
+                    admin:
+                        password: $argon2i$v=19$m=1024,t=2,p=2$T1EuTHVKWlYxOHJZWXdIYQ$SQOdyuzBsmaHGM1VQFtFjSs/9AR4kESJK0y1Qr0Kkhs
+                        roles: 'ROLE_ADMIN'
+    encoders:
+        Symfony\Component\Security\Core\User\User:
+            algorithm: argon2i
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            http_basic: true
+    access_control:
+        - { path: ^/, roles: ROLE_ADMIN }
+            # activate different ways to authenticate
+
+            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
+
+            # form_login: true
+            # https://symfony.com/doc/current/security/form_login_setup.html
