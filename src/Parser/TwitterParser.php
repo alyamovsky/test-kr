@@ -6,13 +6,15 @@ namespace App\Parser;
 
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * Parses tweets via DomCrawler
+ */
 class TwitterParser
 {
     /** @var Crawler */
     private $crawler;
 
     /**
-     * TwitterParser constructor.
      * @param Crawler $crawler
      */
     public function __construct(Crawler $crawler)
@@ -20,12 +22,18 @@ class TwitterParser
         $this->crawler = $crawler;
     }
 
+    /**
+     * @return array
+     */
     public function getTweets()
     {
         $rawEntries = $this->parse();
         return $this->reformatEntries($rawEntries);
     }
 
+    /**
+     * @return array
+     */
     private function parse(): array
     {
         return $this->crawler->filter('.tweet')->each(function (Crawler $node) {
@@ -36,6 +44,10 @@ class TwitterParser
         });
     }
 
+    /**
+     * @param array $entries
+     * @return array
+     */
     private function reformatEntries(array $entries): array
     {
         foreach ($entries as &$entry) {
@@ -50,6 +62,10 @@ class TwitterParser
         return $entries;
     }
 
+    /**
+     * @param string $date
+     * @return string
+     */
     private function reformatDate(string $date): string
     {
         $months = [
@@ -77,6 +93,10 @@ class TwitterParser
         return (string)$date;
     }
 
+    /**
+     * @param string $content
+     * @return string
+     */
     private function reformatContent(string $content): string
     {
         $regex = "~((https?://|pic\.twitter)([-\w\.]+[-\w])+(:\d+)?(/([\w/_\.#-]*(\?\S+)?[^\.\s])?).*$)~";
