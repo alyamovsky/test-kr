@@ -14,21 +14,35 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/main.css') }}">
     <title>{% block title %}{% endblock %}</title>
-    <style>
-        body {
-            font-size: 15px;
-            padding: 10px;
-            color: #555;
-        }
-
-        h2 {
-            color: #444;
-        }
-    </style>
 </head>
 <body>
-{% block body %}{% endblock %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form class="form-inline" action="{{ path('search') }}" method="post">
+                <input type="text" name="query" class="form-control mb-2 mr-sm-2" style="width: 75%"
+                       placeholder="Search news and tags">
+                <button type="submit" class="btn btn-outline-primary mb-2">Search</button>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-9">
+            {% block body %}{% endblock %}
+        </div>
+        <div class="col-md-3" style="border-left: 1px solid #999999">
+            <h2>Popular tags:</h2>
+            {% for tag in tags %}
+                <p><a href="{{ path('articles_by_tag', {id: tag.id}) }}">{{ tag.name }}</a>
+                    ({{ tag.articles|length }})
+                </p>
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% block javascripts %}{% endblock %}
 </body>
 </html>

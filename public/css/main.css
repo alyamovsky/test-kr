@@ -1,0 +1,14 @@
+body {
+    font-size: 15px;
+    padding: 10px;
+    color: #555;
+}
+
+h2 {
+    color: #444;
+}
+
+.highlighted {
+    background-color: yellow;
+    font-style: italic;
+}

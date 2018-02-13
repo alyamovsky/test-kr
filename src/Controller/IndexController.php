@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Tag;
 use App\Repository\ArticleRepository;
 use App\Repository\TagRepository;
+use App\Utils\Sanitizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,10 +60,17 @@ class IndexController extends Controller
     public function search(Request $request, ArticleRepository $articles, TagRepository $tags): Response
     {
         $popularTags = $tags->findMostPopular(Tag::RELEVANCE_TIME_IN_DAYS);
-        $query = $request->request->get('query', '');
+        $rawQuery = $request->request->get('query', '');
+        $query = Sanitizer::sanitizeSearchQuery($rawQuery);
         $foundArticles = $articles->findBySearchQuery($query);
 
-        return $this->render('news.html.twig', ['articles' => $foundArticles, 'tags' => $popularTags, 'title' => "Search results for \"$query\""]);
+        $data = [
+            'articles' => $foundArticles,
+            'tags' => $popularTags,
+            'title' => "Search results for \"$query\"",
+            'query' => $query,
+        ];
 
+        return $this->render('search.html.twig', $data);
     }
 }
