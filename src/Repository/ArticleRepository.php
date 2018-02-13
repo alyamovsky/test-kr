@@ -56,6 +56,60 @@ class ArticleRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param string $rawQuery
+     * @param int $limit
+     * @return Article[]
+     */
+    public function findBySearchQuery(string $rawQuery, int $limit = Article::ITEMS_PER_PAGE): array
+    {
+        $query = $this->sanitizeSearchQuery($rawQuery);
+        $searchTerms = $this->extractSearchTerms($query);
+
+        if (0 === count($searchTerms)) {
+            return [];
+        }
+
+        $qb = $this->createQueryBuilder('a')
+            ->join('a.tags', 't');
+
+        foreach ($searchTerms as $key => $term) {
+            $qb
+                ->orWhere('a.content LIKE :t_' . $key)
+                ->orWhere('t.name LIKE :t_' . $key)
+                ->setParameter('t_' . $key, '%' . $term . '%');
+        }
+
+        return $qb
+            ->orderBy('a.createdAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param string $searchQuery
+     * @return array
+     */
+    private function extractSearchTerms(string $searchQuery): array
+    {
+        $terms = array_unique(explode(' ', mb_strtolower($searchQuery)));
+
+        return array_filter($terms, function ($term) {
+            return 3 <= mb_strlen($term);
+        });
+    }
+
+    /**
+     * Removes all non-alphanumeric characters except whitespaces.
+     * @param string $query
+     * @return string
+     */
+    private function sanitizeSearchQuery(string $query): string
+    {
+        return preg_replace('/[^[:alnum:] ]/', '', trim(preg_replace('/[[:space:]]+/', ' ', $query)));
+    }
+
+    /**
      * @param Query $query
      * @param int $page
      * @return Pagerfanta

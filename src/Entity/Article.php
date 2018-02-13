@@ -45,7 +45,7 @@ class Article
     /**
      * @var Tag[]|ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="tags", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="articles", cascade={"persist"})
      * @ORM\JoinTable(name="articles_tags_bridge")
      */
     private $tags;

@@ -8,6 +8,7 @@ use App\Repository\ArticleRepository;
 use App\Repository\TagRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class IndexController extends Controller
@@ -46,5 +47,22 @@ class IndexController extends Controller
 
         $tag = $tags->find($id);
         return $this->render('news.html.twig', ['articles' => $articlesByTag, 'tags' => $popularTags, 'title' => "News by tag $tag"]);
+    }
+
+    /**
+     * @Route("/search", name="search")
+     * @param Request $request
+     * @param ArticleRepository $articles
+     * @param TagRepository $tags
+     * @return Response
+     */
+    public function search(Request $request, ArticleRepository $articles, TagRepository $tags): Response
+    {
+        $popularTags = $tags->findMostPopular(Tag::RELEVANCE_TIME_IN_DAYS);
+        $query = $request->request->get('query', '');
+        $foundArticles = $articles->findBySearchQuery($query);
+
+        return $this->render('news.html.twig', ['articles' => $foundArticles, 'tags' => $popularTags, 'title' => "Search results for \"$query\""]);
+
     }
 }
