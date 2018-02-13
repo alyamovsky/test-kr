@@ -22,6 +22,11 @@ class Tag
     const RELEVANCE_TIME_IN_DAYS = 20 * 24 * 3600;
 
     /**
+     * How many popular tags to show
+     */
+    const TAGS_LIMIT = 10;
+
+    /**
      * @var int
      *
      * @ORM\Id

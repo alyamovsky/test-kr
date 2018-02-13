@@ -14,7 +14,7 @@ class TagRepository extends ServiceEntityRepository
         parent::__construct($registry, Tag::class);
     }
 
-    public function findMostPopular(int $period)
+    public function findMostPopular(int $period, int $limit = Tag::TAGS_LIMIT)
     {
         $threshold = date('Y-m-d H:i:s', time() - $period);
         $qb = $this->getEntityManager()->createQueryBuilder();
@@ -28,6 +28,7 @@ class TagRepository extends ServiceEntityRepository
             ->groupBy('t.id')
             ->addOrderBy('articles', 'DESC')
             ->addOrderBy('t.name')
+            ->setMaxResults($limit)
             ->setParameter('threshold', $threshold)
             ->getQuery()
             ->getResult();

@@ -86,7 +86,9 @@ class TwitterParser
         $elements = explode(' ', $date);
         unset($elements[1], $elements[5]);
 
-        $elements[3] = array_search($elements[3], $months);
+        $elements[3] = in_array($elements[3], $months) ?
+            array_search($elements[3], $months) :
+            preg_replace('~\.~', '', $elements[3]);
 
         $date = implode(' ', $elements);
 

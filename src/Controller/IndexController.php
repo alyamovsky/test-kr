@@ -46,7 +46,7 @@ class IndexController extends Controller
         $popularTags = $tags->findMostPopular(Tag::RELEVANCE_TIME_IN_DAYS);
 
         $tag = $tags->find($id);
-        return $this->render('news.html.twig', ['articles' => $articlesByTag, 'tags' => $popularTags, 'title' => "News by tag $tag"]);
+        return $this->render('tag.html.twig', ['articles' => $articlesByTag, 'tags' => $popularTags, 'title' => "News by tag $tag"]);
     }
 
     /**

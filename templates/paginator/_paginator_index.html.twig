@@ -1,0 +1,3 @@
+{% if articles|length > constant('App\\Entity\\Article::ITEMS_PER_PAGE') and articles.haveToPaginate %}
+    {{ pagerfanta(articles, 'twitter_bootstrap4', {routeName: 'index_paginated'}) }}
+{% endif %}
